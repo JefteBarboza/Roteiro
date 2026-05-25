@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Orlando 2026">
+<meta name="theme-color" content="#0a1628">
+<title>Orlando 2026 · Guia Mobile</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a1628;
+  --bg2: #0f1f3d;
+  --bg3: #162545;
+  --card: #1a2d50;
+  --card2: #1f3560;
+  --border: rgba(255,255,255,.1);
+  --gold: #e8b84b;
+  --gold-d: #c8952a;
+  --gold-glow: rgba(232,184,75,.15);
+  --text: #f0ede6;
+  --muted: rgba(240,237,230,.55);
+  --purple: #a78bfa;
+  --teal: #34d399;
+  --red: #f87171;
+  --blue: #60a5fa;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html { scroll-behavior:smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+  padding-bottom: calc(70px + var(--safe-bottom));
+  overflow-x: hidden;
+}
+
+/* ── HEADER ── */
+.app-header {
+  background: linear-gradient(135deg, var(--bg2), var(--bg3));
+  border-bottom: 1px solid var(--border);
+  padding: 1.2rem 1.2rem .8rem;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.app-header-inner { display:flex; align-items:center; justify-content:space-between; }
+.app-title { font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:700; color:var(--gold); }
+.app-title span { color:var(--text); font-style:italic; }
+.app-date { font-family:'DM Mono',monospace; font-size:.65rem; color:var(--muted); letter-spacing:.1em; margin-top:.2rem; }
+.today-badge { background:var(--gold); color:var(--bg); font-size:.65rem; font-weight:600; padding:.2rem .6rem; border-radius:100px; font-family:'DM Mono',monospace; letter-spacing:.05em; }
+
+/* ── BOTTOM NAV ── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0; right: 0;
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  display: flex;
+  padding-bottom: var(--safe-bottom);
+  z-index: 300;
+}
+.nav-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: .6rem .2rem;
+  gap: .2rem;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: .6rem;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  letter-spacing: .04em;
+  cursor: pointer;
+  transition: color .2s;
+  text-transform: uppercase;
+}
+.nav-btn .nav-icon { font-size: 1.3rem; }
+.nav-btn.active { color: var(--gold); }
+.nav-btn.active .nav-icon { filter: drop-shadow(0 0 6px rgba(232,184,75,.5)); }
+
+/* ── PAGES ── */
+.page { display: none; padding: 1rem 1rem 1.5rem; animation: fadeIn .25s ease; }
+.page.active { display: block; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+
+/* ── SECTION TITLE ── */
+.s-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  color: var(--gold);
+  margin-bottom: .8rem;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+.s-title::after { content:''; flex:1; height:1px; background:var(--border); }
+
+/* ── DAY CARDS ── */
+.day-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  margin-bottom: .8rem;
+  overflow: hidden;
+  transition: border-color .2s;
+}
+.day-card.today { border-color: var(--gold); box-shadow: 0 0 20px rgba(232,184,75,.15); }
+.day-card-header {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+  padding: .9rem 1rem;
+  cursor: pointer;
+  user-select: none;
+}
+.day-num-badge {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: .3rem .5rem;
+  text-align: center;
+  flex-shrink: 0;
+  min-width: 44px;
+}
+.day-num-badge .dn { font-family:'DM Mono',monospace; font-size:.6rem; color:var(--muted); }
+.day-num-badge .dd { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; color:var(--gold); line-height:1; }
+.day-card.today .day-num-badge { background:var(--gold); border-color:var(--gold); }
+.day-card.today .day-num-badge .dn { color:rgba(10,22,40,.7); }
+.day-card.today .day-num-badge .dd { color:var(--bg); }
+.day-info { flex:1; min-width:0; }
+.day-info .di-label { font-family:'DM Mono',monospace; font-size:.6rem; color:var(--muted); letter-spacing:.08em; }
+.day-info .di-title { font-size:.9rem; font-weight:600; color:var(--text); line-height:1.3; margin-top:.1rem; }
+.day-info .di-tags { display:flex; flex-wrap:wrap; gap:.25rem; margin-top:.4rem; }
+.day-arrow { color:var(--muted); font-size:.7rem; transition:transform .3s; flex-shrink:0; }
+.day-card.open .day-arrow { transform:rotate(180deg); }
+.day-body { display:none; padding:.8rem 1rem 1rem; border-top:1px solid var(--border); }
+.day-card.open .day-body { display:block; }
+.day-note { background:var(--bg); border-left:3px solid var(--gold); border-radius:0 8px 8px 0; padding:.6rem .8rem; font-size:.82rem; color:var(--muted); line-height:1.5; margin-bottom:.8rem; }
+
+/* ── TAGS ── */
+.tag { display:inline-flex; align-items:center; height:20px; padding:0 .5rem; border-radius:100px; font-size:.6rem; font-weight:600; letter-spacing:.04em; }
+.tag-u { background:rgba(167,139,250,.15); color:var(--purple); border:1px solid rgba(167,139,250,.25); }
+.tag-d { background:rgba(248,113,113,.12); color:var(--red); border:1px solid rgba(248,113,113,.2); }
+.tag-w { background:rgba(52,211,153,.1); color:var(--teal); border:1px solid rgba(52,211,153,.2); }
+.tag-r { background:rgba(255,255,255,.07); color:var(--muted); border:1px solid var(--border); }
+.tag-s { background:rgba(96,165,250,.1); color:var(--blue); border:1px solid rgba(96,165,250,.2); }
+.tag-f { background:rgba(232,184,75,.12); color:var(--gold); border:1px solid rgba(232,184,75,.2); }
+.tag-today { background:var(--gold); color:var(--bg); border:none; }
+
+/* ── ATTRACTION LIST ── */
+.attr-list { display:flex; flex-direction:column; gap:.5rem; }
+.attr-item {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: .7rem .9rem;
+}
+.attr-item.priority { border-color: rgba(232,184,75,.3); background:rgba(232,184,75,.04); }
+.attr-item .ai-top { display:flex; align-items:flex-start; gap:.6rem; }
+.attr-item .ai-time { font-family:'DM Mono',monospace; font-size:.62rem; color:var(--muted); white-space:nowrap; padding-top:.15rem; min-width:52px; }
+.attr-item .ai-name { font-size:.85rem; font-weight:600; color:var(--text); flex:1; }
+.attr-item .ai-stars { font-size:.65rem; color:var(--gold); margin-left:auto; white-space:nowrap; }
+.attr-item .ai-tip { font-size:.75rem; color:var(--muted); margin-top:.3rem; line-height:1.45; padding-left:58px; }
+.attr-item .ai-height { display:inline-block; background:rgba(167,139,250,.12); color:var(--purple); border-radius:4px; padding:.1rem .35rem; font-size:.6rem; font-family:'DM Mono',monospace; margin-top:.3rem; margin-left:58px; }
+.rope-badge { background:var(--gold); color:var(--bg); border-radius:4px; padding:.15rem .4rem; font-size:.58rem; font-family:'DM Mono',monospace; font-weight:700; }
+.alert-box { background:rgba(232,184,75,.08); border:1px solid rgba(232,184,75,.25); border-radius:10px; padding:.7rem .9rem; font-size:.8rem; color:var(--gold); margin-bottom:.8rem; line-height:1.5; }
+.alert-box strong { color:var(--text); }
+
+/* ── CHECKLIST ── */
+.cl-section { margin-bottom:1.2rem; }
+.cl-section-title { font-size:.75rem; font-weight:600; color:var(--muted); letter-spacing:.1em; text-transform:uppercase; margin-bottom:.5rem; font-family:'DM Mono',monospace; }
+.cl-item {
+  display:flex; align-items:flex-start; gap:.8rem;
+  padding:.7rem .9rem;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:10px;
+  margin-bottom:.4rem;
+  cursor:pointer;
+  user-select:none;
+  transition:background .2s, border-color .2s;
+}
+.cl-item.done { background:rgba(52,211,153,.06); border-color:rgba(52,211,153,.2); }
+.cl-box {
+  width:22px; height:22px; border:2px solid var(--border);
+  border-radius:6px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  transition:all .2s; margin-top:.05rem;
+}
+.cl-item.done .cl-box { background:var(--teal); border-color:var(--teal); }
+.cl-item.done .cl-box::after { content:'✓'; font-size:.75rem; color:var(--bg); font-weight:700; }
+.cl-item .cl-text { font-size:.85rem; color:var(--text); line-height:1.4; flex:1; }
+.cl-item.done .cl-text { text-decoration:line-through; color:var(--muted); }
+.cl-progress { background:var(--bg); border-radius:10px; padding:.8rem 1rem; margin-bottom:1rem; display:flex; align-items:center; gap:.8rem; }
+.cl-bar-wrap { flex:1; background:var(--border); border-radius:100px; height:6px; overflow:hidden; }
+.cl-bar { height:100%; background:var(--teal); border-radius:100px; transition:width .4s ease; }
+.cl-count { font-family:'DM Mono',monospace; font-size:.7rem; color:var(--teal); white-space:nowrap; }
+
+/* ── PARK GUIDE ── */
+.park-tabs { display:flex; gap:.4rem; margin-bottom:1rem; overflow-x:auto; scrollbar-width:none; padding-bottom:.2rem; }
+.park-tabs::-webkit-scrollbar { display:none; }
+.park-tab {
+  flex-shrink:0; padding:.45rem .9rem;
+  background:var(--card); border:1px solid var(--border);
+  border-radius:100px; font-size:.75rem; font-weight:500;
+  color:var(--muted); cursor:pointer; transition:all .2s;
+  white-space:nowrap;
+}
+.park-tab.active { background:var(--gold); color:var(--bg); border-color:var(--gold); font-weight:600; }
+.park-content { display:none; }
+.park-content.active { display:block; }
+.park-intro { background:var(--card); border-radius:12px; padding:.9rem 1rem; margin-bottom:.8rem; font-size:.82rem; color:var(--muted); line-height:1.5; }
+.park-intro strong { color:var(--gold); display:block; margin-bottom:.3rem; font-size:.9rem; }
+
+/* ── CONTACTS ── */
+.contact-card {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:14px; padding:1rem; margin-bottom:.8rem;
+}
+.contact-card .cc-title { font-weight:600; color:var(--text); margin-bottom:.6rem; display:flex; align-items:center; gap:.5rem; }
+.contact-row { display:flex; justify-content:space-between; align-items:center; padding:.4rem 0; border-bottom:1px solid var(--border); font-size:.82rem; }
+.contact-row:last-child { border-bottom:none; }
+.contact-row .cr-label { color:var(--muted); }
+.contact-row .cr-value { color:var(--text); font-family:'DM Mono',monospace; font-size:.78rem; font-weight:500; }
+.contact-row a { color:var(--gold); text-decoration:none; font-family:'DM Mono',monospace; font-size:.78rem; }
+
+/* ── BUDGET ── */
+.budget-card {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:14px; overflow:hidden; margin-bottom:.8rem;
+}
+.budget-header { background:var(--bg); padding:.6rem 1rem; font-size:.65rem; letter-spacing:.1em; color:var(--muted); font-family:'DM Mono',monospace; }
+.budget-row2 { display:flex; justify-content:space-between; align-items:center; padding:.65rem 1rem; border-bottom:1px solid var(--border); font-size:.82rem; gap:.5rem; }
+.budget-row2:last-child { border-bottom:none; }
+.budget-row2 .br-label { color:var(--muted); flex:1; }
+.budget-row2 .br-value { font-family:'DM Mono',monospace; font-size:.78rem; color:var(--text); font-weight:500; white-space:nowrap; }
+.budget-row2.total { background:rgba(232,184,75,.06); }
+.budget-row2.total .br-label { color:var(--text); font-weight:600; }
+.budget-row2.total .br-value { color:var(--gold); font-size:.88rem; }
+.budget-row2.cashback .br-value { color:var(--teal); }
+.budget-row2.zero .br-value { color:rgba(52,211,153,.6); }
+.budget-row2.neutral .br-value { color:var(--muted); }
+
+/* ── SIESTA KEY ── */
+.timeline-item { display:flex; gap:.8rem; margin-bottom:.6rem; }
+.tl-dot-col { display:flex; flex-direction:column; align-items:center; }
+.tl-dot { width:10px; height:10px; border-radius:50%; background:var(--gold); flex-shrink:0; margin-top:.35rem; }
+.tl-line { width:2px; flex:1; background:var(--border); margin-top:.3rem; }
+.tl-time { font-family:'DM Mono',monospace; font-size:.65rem; color:var(--gold); white-space:nowrap; width:40px; flex-shrink:0; padding-top:.25rem; }
+.tl-content { flex:1; background:var(--card); border-radius:10px; padding:.6rem .8rem; margin-bottom:.2rem; }
+.tl-content .tc-title { font-size:.85rem; font-weight:600; color:var(--text); }
+.tl-content .tc-note { font-size:.75rem; color:var(--muted); margin-top:.2rem; line-height:1.4; }
+
+/* ── UTILS ── */
+.spacer { height:.5rem; }
+.divider { height:1px; background:var(--border); margin:1rem 0; }
+.info-row { display:flex; gap:.5rem; align-items:flex-start; padding:.5rem 0; font-size:.82rem; }
+.info-row .ir-icon { font-size:1rem; flex-shrink:0; }
+.info-row .ir-text { color:var(--muted); line-height:1.4; }
+.info-row .ir-text strong { color:var(--text); }
+
+/* ── SCROLL TO TOP ── */
+.fab {
+  position:fixed; bottom:calc(80px + var(--safe-bottom)); right:1rem;
+  width:42px; height:42px; border-radius:50%;
+  background:var(--gold); color:var(--bg);
+  border:none; font-size:1.1rem; cursor:pointer;
+  box-shadow:0 4px 16px rgba(232,184,75,.35);
+  display:none; align-items:center; justify-content:center;
+  z-index:150; transition:opacity .2s;
+}
+.fab.visible { display:flex; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="app-header">
+  <div class="app-header-inner">
+    <div>
+      <div class="app-title">Orlando <span>2026</span></div>
+      <div class="app-date">26 MAI → 12 JUN · FAMÍLIA BARBOZA BRANDÃO</div>
+    </div>
+    <div class="today-badge" id="todayBadge">HOJ</div>
+  </div>
+</header>
+
+<!-- PAGE: CRONOGRAMA -->
+<div class="page active" id="page-schedule">
+
+  <div class="s-title">📅 Cronograma</div>
+
+  <!-- D01 -->
+  <div class="day-card" data-date="2026-05-26">
+    <div class="day-card-header" onclick="toggleDay(this)">
+      <div class="day-num-badge"><div class="dn">MAI</div><div class="dd">26</div></div>
+      <div class="day-info">
+        <div class="di-label">D01 · TERÇA</div>
+        <div class="di-title">✈️ GRU → PTY → MCO</div>
+        <div class="di-tags"><span class="tag tag-f">Voo</span></div>
+      </div>
+      <div class="day-arrow">▼</div>
+    </div>
+    <div class="day-body">
+      <div class="day-note">03:15 Copa Airlines GRU → PTY → MCO · Chegada 14:17 · Florida Mall · Check-in Celebration Suites</div>
+      <div class="attr-list">
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">03:15</div><div class="ai-name">Embarque GRU — Copa Airlines</div></div><div class="ai-tip">Estacionamento GRU pré-pago. Levar snacks para as crianças.</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">13:48</div><div class="ai-name">Chegada MCO</div></div><div class="ai-tip">Visitor Toll Pass — pegar GRÁTIS nos terminais A/B/C antes de sair. Economiza R$1.200+ em pedágios.</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">15:30</div><div class="ai-name">Retirada Toyota RAV4</div></div><div class="ai-tip">Conferir avarias antes de assinar. 14 dias.</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">16:00</div><div class="ai-name">Florida Mall (opcional)</div></div><div class="ai-tip">Compras básicas: protetor solar, snacks, água.</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">18:00</div><div class="ai-name">Check-in Celebration Suites</div></div><div class="ai-tip">5820 W Irlo Bronson Hwy, Kissimmee. Dormir cedo — amanhã é o grande dia!</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- D02 -->
+  <div class="day-card" data-date="2026-05-27">
+    <div class="day-card-header" onclick="toggleDay(this)">
+      <div class="day-num-badge"><div class="dn">MAI</div><div class="dd">27</div></div>
+      <div class="day-info">
+        <div class="di-label">D02 · QUARTA</div>
+        <div class="di-title">🌟 Epic Universe — Nintendo + Isle of Berk</div>
+        <div class="di-tags"><span class="tag tag-u">Epic Universe</span></div>
+      </div>
+      <div class="day-arrow">▼</div>
+    </div>
+    <div class="day-body">
+      <div class="alert-box">⚡ <strong>Rope drop obrigatório</strong> — chegue 45min antes. Mario Kart: 20min abertura → 120min às 11h.</div>
+      <div class="attr-list">
+        <div class="attr-item priority"><div class="ai-top"><div class="ai-time"><span class="rope-badge">ROPE</span></div><div class="ai-name">🎯 Mario Kart: Bowser's Challenge</div><div class="ai-stars">★★★★★</div></div><div class="ai-height">40″ · 102cm · De 4a pode!</div><div class="ai-tip">Maior fila Nintendo. Vá DIRETO na abertura.</div></div>
+        <div class="attr-item priority"><div class="ai-top"><div class="ai-time">Logo após</div><div class="ai-name">🎯 Mine-Cart Madness</div><div class="ai-stars">★★★★★</div></div><div class="ai-height">34″ · 87cm</div><div class="ai-tip">30min abertura → 90min+ às 13h.</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">09:30</div><div class="ai-name">Yoshi's Adventure</div><div class="ai-stars">★★★☆☆</div></div><div class="ai-height">Livre — de 4a</div><div class="ai-tip">Montaria gentil em família.</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">11:00</div><div class="ai-name">Power-Up Band</div><div class="ai-stars">★★★★☆</div></div><div class="ai-height">US$39,99</div><div class="ai-tip">Coleta moedas pelos mundos. De 4a vai enlouquecer!</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">11:30</div><div class="ai-name">🍕 Toadstool Cafe — almoço</div></div><div class="ai-tip">Reserve no app! Evite 12–14h.</div></div>
+        <div class="attr-item priority"><div class="ai-top"><div class="ai-time">13:00</div><div class="ai-name">Stardust Racers</div><div class="ai-stars">★★★★★</div></div><div class="ai-height">48″ · 122cm · Teen + adultos</div><div class="ai-tip">Melhor coaster do Epic. 62mph.</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">15:00</div><div class="ai-name">Hiccup's Wing Gliders</div><div class="ai-stars">★★★★☆</div></div><div class="ai-height">40″ · 102cm</div><div class="ai-tip">Isle of Berk. Família toda.</div></div>
+        <div class="attr-item priority"><div class="ai-top"><div class="ai-time">19:00+</div><div class="ai-name">⭐ HP — Battle at the Ministry</div><div class="ai-stars">★★★★★</div></div><div class="ai-height">40″ · 102cm</div><div class="ai-tip">SEMPRE após 19h. 120–300min ao meio-dia → 37–53min à noite.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- D03 -->
+  <div class="day-card" data-date="2026-05-28">
+    <div class="day-card-header" onclick="toggleDay(this)">
+      <div class="day-num-badge"><div class="dn">MAI</div><div class="dd">28</div></div>
+      <div class="day-info">
+        <div class="di-label">D03 · QUINTA</div>
+        <div class="di-title">⚡ Epic Universe — Dark Universe + Ministry</div>
+        <div class="di-tags"><span class="tag tag-u">Epic Universe</span></div>
+      </div>
+      <div class="day-arrow">▼</div>
+    </div>
+    <div class="day-body">
+      <div class="alert-box">💡 <strong>Estratégia:</strong> Vá CONTRA o fluxo — maioria vai para Nintendo. Dark Universe menos visitado de manhã.</div>
+      <div class="attr-list">
+        <div class="attr-item priority"><div class="ai-top"><div class="ai-time"><span class="rope-badge">ROPE</span></div><div class="ai-name">🎯 Monsters Unchained</div><div class="ai-stars">★★★★★</div></div><div class="ai-height">48″ · 122cm</div><div class="ai-tip">14 animatrônicos. 10min abertura → 75min às 11h.</div></div>
+        <div class="attr-item priority"><div class="ai-top"><div class="ai-time">Logo após</div><div class="ai-name">🎯 Curse of the Werewolf</div><div class="ai-stars">★★★★☆</div></div><div class="ai-height">40″ · 102cm</div><div class="ai-tip">Dark ride intenso. Teen vai adorar.</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">10:30</div><div class="ai-name">Dark Arts Encounter (show)</div><div class="ai-stars">★★★★☆</div></div><div class="ai-tip">Chegue 10min antes.</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">13:00</div><div class="ai-name">🥐 Cafés Ministry of Magic</div></div><div class="ai-tip">Butterbeer quente. Cafés parisienses mágicos na Place Cachée.</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">17:00</div><div class="ai-name">Le Circus Arcanus (show)</div><div class="ai-stars">★★★★★</div></div><div class="ai-tip">IMPERDÍVEL. Fantoches mágicos no Ministry of Magic.</div></div>
+        <div class="attr-item priority"><div class="ai-top"><div class="ai-time">19:00+</div><div class="ai-name">⭐ HP — Battle at the Ministry</div><div class="ai-stars">★★★★★</div></div><div class="ai-height">40″ · 102cm</div><div class="ai-tip">SEMPRE após 19h. Segunda visita!</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- D04 -->
+  <div class="day-card" data-date="2026-05-29">
+    <div class="day-card-header" onclick="toggleDay(this)">
+      <div class="day-num-badge"><div class="dn">MAI</div><div class="dd">29</div></div>
+      <div class="day-info">
+        <div class="di-label">D04 · SEXTA</div>
+        <div class="di-title">🏝️ Volcano Bay — Parque Aquático</div>
+        <div class="di-tags"><span class="tag tag-w">Aquático</span></div>
+      </div>
+      <div class="day-arrow">▼</div>
+    </div>
+    <div class="day-body">
+      <div class="alert-box">🌊 <strong>Chegue na abertura</strong> — filas do TapuTapu explodem após 11h.</div>
+      <div class="attr-list">
+        <div class="attr-item priority"><div class="ai-top"><div class="ai-time"><span class="rope-badge">ABERT.</span></div><div class="ai-name">🎯 Krakatau Aqua Coaster</div><div class="ai-stars">★★★★★</div></div><div class="ai-height">42″ · 107cm · Família</div><div class="ai-tip">Mais concorrido. Bote 4 pessoas.</div></div>
+        <div class="attr-item priority"><div class="ai-top"><div class="ai-time">Logo após</div><div class="ai-name">🎯 Ko'okiri Body Plunge</div><div class="ai-stars">★★★★★</div></div><div class="ai-height">48″ · 122cm · Teen + adultos</div><div class="ai-tip">Trapdoor drop. 70mph.</div></div>
+        <div class="attr-item priority"><div class="ai-top"><div class="ai-time">Tarde</div><div class="ai-name">⭐ Runamukka Reef — de 4a!</div><div class="ai-stars">★★★★★</div></div><div class="ai-height">Livre</div><div class="ai-tip">Parque infantil aquático temático. Vai querer ficar o dia todo!</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">Tarde</div><div class="ai-name">The Reef (snorkel)</div><div class="ai-stars">★★★★☆</div></div><div class="ai-tip">Teen — tubarões e arraias reais.</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">Qualquer</div><div class="ai-name">Puka Uli Lagoon (ondas)</div></div><div class="ai-tip">Piscina de ondas. Família toda incluindo de 4a.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- D05 -->
+  <div class="day-card" data-date="2026-05-30">
+    <div class="day-card-header" onclick="toggleDay(this)">
+      <div class="day-num-badge"><div class="dn">MAI</div><div class="dd">30</div></div>
+      <div class="day-info">
+        <div class="di-label">D05 · SÁBADO ⚠️ mais lotado</div>
+        <div class="di-title">🧙 Islands of Adventure — Hogsmeade</div>
+        <div class="di-tags"><span class="tag tag-u">IoA</span></div>
+      </div>
+      <div class="day-arrow">▼</div>
+    </div>
+    <div class="day-body">
+      <div class="alert-box">⚠️ <strong>Sábado = mais lotado da semana.</strong> Rope drop CRÍTICO — chegue 1h antes. Hagrid's pode ter 2h+ mesmo cedo.</div>
+      <div class="attr-list">
+        <div class="attr-item priority"><div class="ai-top"><div class="ai-time"><span class="rope-badge">ROPE</span></div><div class="ai-name">🎯 HP — Forbidden Journey</div><div class="ai-stars">★★★★★</div></div><div class="ai-height">48″ · 122cm</div><div class="ai-tip">Vá DIRETO. 25min abertura → 80–100min às 11h.</div></div>
+        <div class="attr-item priority"><div class="ai-top"><div class="ai-time">Logo após</div><div class="ai-name">🎯 Hagrid's Magical Creatures</div><div class="ai-stars">★★★★★</div></div><div class="ai-height">48″ · 122cm</div><div class="ai-tip">Top 3 do mundo. 90–180min. Use Express Pass se tiver.</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">09:30</div><div class="ai-name">Flight of the Hippogriff</div><div class="ai-stars">★★★★☆</div></div><div class="ai-height">36″ · 91cm · Família</div><div class="ai-tip">Fila curta manhã ~20min.</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">10:30</div><div class="ai-name">Incredible Hulk Coaster</div><div class="ai-stars">★★★★☆</div></div><div class="ai-height">54″ · 137cm · Teen+adultos</div><div class="ai-tip">0–64mph em 2s.</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">12:30</div><div class="ai-name">🍗 Three Broomsticks + Butterbeer</div></div><div class="ai-tip">Coma antes 12:30 ou após 14h.</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">14:30</div><div class="ai-name">Seuss Landing — de 4a</div><div class="ai-stars">★★★☆☆</div></div><div class="ai-tip">Cat in the Hat, One Fish, Caro-Seuss-el.</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">15:30</div><div class="ai-name">Jurassic Park River Adventure</div><div class="ai-stars">★★★★☆</div></div><div class="ai-height">42″ · 107cm</div><div class="ai-tip">ROUPA MOLHA — leve capa!</div></div>
+        <div class="attr-item priority"><div class="ai-top"><div class="ai-time">18:00+</div><div class="ai-name">🚂 Hogwarts Express → USF</div><div class="ai-stars">★★★★★</div></div><div class="ai-tip">Experiência DIFERENTE de USF→IoA! Obrigatório!</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- D06 -->
+  <div class="day-card" data-date="2026-05-31">
+    <div class="day-card-header" onclick="toggleDay(this)">
+      <div class="day-num-badge"><div class="dn">MAI</div><div class="dd">31</div></div>
+      <div class="day-info">
+        <div class="di-label">D06 · DOMINGO</div>
+        <div class="di-title">🎬 Universal Studios FL — Diagon Alley</div>
+        <div class="di-tags"><span class="tag tag-u">USF</span></div>
+      </div>
+      <div class="day-arrow">▼</div>
+    </div>
+    <div class="day-body">
+      <div class="attr-list">
+        <div class="attr-item priority"><div class="ai-top"><div class="ai-time"><span class="rope-badge">ROPE</span></div><div class="ai-name">🎯 HP — Escape from Gringotts</div><div class="ai-stars">★★★★★</div></div><div class="ai-height">40″ · 102cm</div><div class="ai-tip">Dark ride + coaster + 3D + fogo real. Melhor atração USF.</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">Logo após</div><div class="ai-name">Ollivanders (show varinha)</div><div class="ai-stars">★★★★☆</div></div><div class="ai-tip">De 4a pode ser escolhido! Sessões a cada 15min.</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">10:30</div><div class="ai-name">The Simpsons Ride</div><div class="ai-stars">★★★★☆</div></div><div class="ai-height">40″ · 102cm</div><div class="ai-tip">Família toda.</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">13:15</div><div class="ai-name">Despicable Me Minion Mayhem</div><div class="ai-stars">★★★☆☆</div></div><div class="ai-height">40″ · 102cm</div><div class="ai-tip">ÓTIMO para o de 4a. Simulador suave.</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">14:15</div><div class="ai-name">ET Adventure</div><div class="ai-stars">★★★★☆</div></div><div class="ai-height">34″ · 86cm</div><div class="ai-tip">Clássico. Família toda.</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">17:00</div><div class="ai-name">Revenge of the Mummy</div><div class="ai-stars">★★★★☆</div></div><div class="ai-height">48″ · 122cm · Teen+adultos</div><div class="ai-tip">Coaster no escuro. Lançamento surpresa.</div></div>
+        <div class="attr-item priority"><div class="ai-top"><div class="ai-time">18:00+</div><div class="ai-name">🚂 Hogwarts Express → IoA</div><div class="ai-stars">★★★★★</div></div><div class="ai-tip">Personagens DIFERENTES do trajeto de volta!</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- D07 -->
+  <div class="day-card" data-date="2026-06-01">
+    <div class="day-card-header" onclick="toggleDay(this)">
+      <div class="day-num-badge"><div class="dn">JUN</div><div class="dd">01</div></div>
+      <div class="day-info">
+        <div class="di-label">D07 · SEGUNDA · ⭐ DIA ESPECIAL</div>
+        <div class="di-title">🚀 Disney Hollywood Studios</div>
+        <div class="di-tags"><span class="tag tag-d">Disney</span><span class="tag tag-d">Galaxy's Edge</span></div>
+      </div>
+      <div class="day-arrow">▼</div>
+    </div>
+    <div class="day-body">
+      <div class="alert-box">🚀 <strong>Lightning Lane às 7h!</strong> Abra o app Disney e compre Rise of Resistance imediatamente. Savi's Workshop: reservado — chegar na hora!</div>
+      <div class="attr-list">
+        <div class="attr-item priority"><div class="ai-top"><div class="ai-time"><span class="rope-badge">ROPE</span></div><div class="ai-name">Millennium Falcon: Smugglers Run</div><div class="ai-stars">★★★★☆</div></div><div class="ai-height">38″ · 97cm · Família</div><div class="ai-tip">Pilote a Falcon! De 4a com adulto.</div></div>
+        <div class="attr-item priority"><div class="ai-top"><div class="ai-time">Com LL</div><div class="ai-name">⭐ Rise of the Resistance</div><div class="ai-stars">★★★★★</div></div><div class="ai-height">40″ · 102cm</div><div class="ai-tip">MELHOR ATRAÇÃO DA DISNEY. Use o Lightning Lane!</div></div>
+        <div class="attr-item priority"><div class="ai-top"><div class="ai-time">11:00</div><div class="ai-name">⭐ Savi's Workshop — Lightsaber</div><div class="ai-stars">★★★★★</div></div><div class="ai-height">US$149,99 · RESERVADO</div><div class="ai-tip">Memória para a vida toda. Não se atrase!</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">12:30</div><div class="ai-name">🍽️ Oga's Cantina / Docking Bay 7</div></div><div class="ai-tip">Reservado no app. Drinques temáticos + banda ao vivo.</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">13:30</div><div class="ai-name">Tower of Terror</div><div class="ai-stars">★★★★★</div></div><div class="ai-height">40″ · 102cm</div><div class="ai-tip">Queda livre. Teen vai AMAR.</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">15:00</div><div class="ai-name">Rock 'n' Roller Coaster</div><div class="ai-stars">★★★★☆</div></div><div class="ai-height">48″ · 122cm · Teen+adultos</div><div class="ai-tip">0–57mph em 2.8s. Loopings no escuro.</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">17:00</div><div class="ai-name">Toy Story Land — de 4a</div><div class="ai-stars">★★★☆☆</div></div><div class="ai-height">Livre / 38″</div><div class="ai-tip">Tarde = menos fila. Alien Swirling + Slinky Dog.</div></div>
+        <div class="attr-item priority"><div class="ai-top"><div class="ai-time">19:00</div><div class="ai-name">Star Wars: A Galaxy Far, Far Away</div><div class="ai-stars">★★★★☆</div></div><div class="ai-tip">Show noturno gratuito. Encerramento perfeito!</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- D08 -->
+  <div class="day-card" data-date="2026-06-02">
+    <div class="day-card-header" onclick="toggleDay(this)">
+      <div class="day-num-badge"><div class="dn">JUN</div><div class="dd">02</div></div>
+      <div class="day-info">
+        <div class="di-label">D08 · TERÇA</div>
+        <div class="di-title">🔄 Epic Universe — Revisita Favoritos</div>
+        <div class="di-tags"><span class="tag tag-u">Epic Universe</span></div>
+      </div>
+      <div class="day-arrow">▼</div>
+    </div>
+    <div class="day-body">
+      <div class="attr-list">
+        <div class="attr-item priority"><div class="ai-top"><div class="ai-time"><span class="rope-badge">ROPE</span></div><div class="ai-name">Monsters Unchained</div><div class="ai-stars">★★★★★</div></div><div class="ai-tip">2ª vez — detalhe os cenários!</div></div>
+        <div class="attr-item priority"><div class="ai-top"><div class="ai-time">Logo após</div><div class="ai-name">Mario Kart — 2ª vez</div><div class="ai-stars">★★★★★</div></div><div class="ai-tip">Tente superar o recorde da 1ª vez!</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">Tarde</div><div class="ai-name">Stardust Racers — Photon vs Pulsar</div><div class="ai-stars">★★★★★</div></div><div class="ai-tip">Experimente o outro lado — percursos diferentes!</div></div>
+        <div class="attr-item priority"><div class="ai-top"><div class="ai-time">19:00+</div><div class="ai-name">⭐ Battle at the Ministry</div><div class="ai-stars">★★★★★</div></div><div class="ai-tip">SEMPRE após 19h.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- D09 -->
+  <div class="day-card" data-date="2026-06-03">
+    <div class="day-card-header" onclick="toggleDay(this)">
+      <div class="day-num-badge"><div class="dn">JUN</div><div class="dd">03</div></div>
+      <div class="day-info">
+        <div class="di-label">D09 · QUARTA</div>
+        <div class="di-title">🏖️ Day Trip — Siesta Key Beach</div>
+        <div class="di-tags"><span class="tag tag-w">Praia</span><span class="tag tag-r">Day Trip</span></div>
+      </div>
+      <div class="day-arrow">▼</div>
+    </div>
+    <div class="day-body">
+      <div class="alert-box">🌴 <strong>Siesta Key Beach</strong> — areia de quartzo branca não esquenta. Estacionamento GRATUITO!</div>
+      <div class="attr-list">
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">07:00</div><div class="ai-name">Saída Orlando</div></div><div class="ai-tip">I-4 W → I-75 S → Stickney Point Rd · ~2h de viagem.</div></div>
+        <div class="attr-item priority"><div class="ai-top"><div class="ai-time">09:00</div><div class="ai-name">🏖️ Siesta Key Beach</div><div class="ai-stars">★★★★★</div></div><div class="ai-tip">Areia fria, água calma e rasa. Playground na praia. De 4a vai adorar! Golfinhos frequentes.</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">12:30</div><div class="ai-name">🍽️ Almoço — Old Salty Dog</div></div><div class="ai-tip">Ou Siesta Key Oyster Bar. 5min da praia em Siesta Key Village.</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">14:00</div><div class="ai-name">Siesta Key Village</div></div><div class="ai-tip">Lojas, sorveterias, clima de ilha. Ótimo com crianças.</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">17:00</div><div class="ai-name">Retorno Orlando</div></div><div class="ai-tip">I-75 N → I-4 E · ~2h · Chegada ~19h.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- D10 -->
+  <div class="day-card" data-date="2026-06-04">
+    <div class="day-card-header" onclick="toggleDay(this)">
+      <div class="day-num-badge"><div class="dn">JUN</div><div class="dd">04</div></div>
+      <div class="day-info">
+        <div class="di-label">D10 · QUINTA — mais tranquilo IoA</div>
+        <div class="di-title">🦕 Islands of Adventure — Velocicoaster</div>
+        <div class="di-tags"><span class="tag tag-u">IoA</span></div>
+      </div>
+      <div class="day-arrow">▼</div>
+    </div>
+    <div class="day-body">
+      <div class="attr-list">
+        <div class="attr-item priority"><div class="ai-top"><div class="ai-time"><span class="rope-badge">ROPE</span></div><div class="ai-name">🎯 Velocicoaster</div><div class="ai-stars">★★★★★</div></div><div class="ai-height">51″ · 130cm · Teen+adultos</div><div class="ai-tip">Melhor coaster IoA. 70mph, inversões. 30min abertura → 90min às 12h.</div></div>
+        <div class="attr-item priority"><div class="ai-top"><div class="ai-time">Logo após</div><div class="ai-name">🎯 Hagrid's Magical Creatures</div><div class="ai-stars">★★★★★</div></div><div class="ai-height">48″ · 122cm</div><div class="ai-tip">Top 3 do mundo. Use Express Pass se tiver.</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">10:00</div><div class="ai-name">JP River Adventure</div><div class="ai-stars">★★★★☆</div></div><div class="ai-height">42″ · 107cm</div><div class="ai-tip">ROUPA MOLHA — leve capa!</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">13:00</div><div class="ai-name">Seuss Landing — de 4a</div></div><div class="ai-tip">Cat in the Hat (36″), Caro-Seuss-el, One Fish.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- D11 -->
+  <div class="day-card" data-date="2026-06-05">
+    <div class="day-card-header" onclick="toggleDay(this)">
+      <div class="day-num-badge"><div class="dn">JUN</div><div class="dd">05</div></div>
+      <div class="day-info">
+        <div class="di-label">D11 · SEXTA</div>
+        <div class="di-title">🎢 Epic Universe — Dia Completo</div>
+        <div class="di-tags"><span class="tag tag-u">Epic Universe</span></div>
+      </div>
+      <div class="day-arrow">▼</div>
+    </div>
+    <div class="day-body">
+      <div class="attr-list">
+        <div class="attr-item priority"><div class="ai-top"><div class="ai-time">Manhã</div><div class="ai-name">Battle at Ministry (manhã)</div><div class="ai-stars">★★★★★</div></div><div class="ai-tip">45–60min de manhã — aproveite se a fila estiver ok!</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">Manhã</div><div class="ai-name">Mario Kart + varinha interativa</div><div class="ai-stars">★★★★★</div></div><div class="ai-tip">Explore os pontos de varinha pelo Nintendo World.</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">Tarde</div><div class="ai-name">Le Circus Arcanus (show)</div><div class="ai-stars">★★★★★</div></div><div class="ai-tip">Se não viu no D03 — IMPERDÍVEL.</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">Tarde</div><div class="ai-name">📸 Foto na Chronos Tower</div></div><div class="ai-tip">Melhor ângulo para foto do relógio dourado.</div></div>
+        <div class="attr-item priority"><div class="ai-top"><div class="ai-time">19:00+</div><div class="ai-name">⭐ Battle at the Ministry</div><div class="ai-stars">★★★★★</div></div><div class="ai-tip">SEMPRE após 19h.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- D12 -->
+  <div class="day-card" data-date="2026-06-06">
+    <div class="day-card-header" onclick="toggleDay(this)">
+      <div class="day-num-badge"><div class="dn">JUN</div><div class="dd">06</div></div>
+      <div class="day-info">
+        <div class="di-label">D12 · SÁBADO</div>
+        <div class="di-title">🌴 Dia Livre — Piscina + I-Drive</div>
+        <div class="di-tags"><span class="tag tag-r">Descanso</span></div>
+      </div>
+      <div class="day-arrow">▼</div>
+    </div>
+    <div class="day-body">
+      <div class="day-note">Piscina Celebration Suites · ICON Park (opcional ~US$30) · Jantar CityWalk sem ingresso.</div>
+    </div>
+  </div>
+
+  <!-- D13 -->
+  <div class="day-card" data-date="2026-06-07">
+    <div class="day-card-header" onclick="toggleDay(this)">
+      <div class="day-num-badge"><div class="dn">JUN</div><div class="dd">07</div></div>
+      <div class="day-info">
+        <div class="di-label">D13 · DOMINGO</div>
+        <div class="di-title">🎪 Disney Springs + Cirque du Soleil</div>
+        <div class="di-tags"><span class="tag tag-d">Disney Springs</span></div>
+      </div>
+      <div class="day-arrow">▼</div>
+    </div>
+    <div class="day-body">
+      <div class="attr-list">
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">Manhã</div><div class="ai-name">World of Disney · LEGO Store</div></div><div class="ai-tip">Sem ingresso. De 4a vai adorar a LEGO Store!</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">Almoço</div><div class="ai-name">🍽️ The BOATHOUSE</div></div><div class="ai-tip">Reservado! Uma das melhores do Disney Springs.</div></div>
+        <div class="attr-item priority"><div class="ai-top"><div class="ai-time">Noite</div><div class="ai-name">🎪 Cirque du Soleil — Drawn to Life</div><div class="ai-stars">★★★★★</div></div><div class="ai-tip">Reservado! Chegue 30min antes. Espetáculo com temática Disney.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- D14 -->
+  <div class="day-card" data-date="2026-06-08">
+    <div class="day-card-header" onclick="toggleDay(this)">
+      <div class="day-num-badge"><div class="dn">JUN</div><div class="dd">08</div></div>
+      <div class="day-info">
+        <div class="di-label">D14 · SEGUNDA · ⭐ ÚLTIMO DIA DO PASS</div>
+        <div class="di-title">⭐ Epic Universe — 14º Dia Consecutivo</div>
+        <div class="di-tags"><span class="tag tag-u">Epic Universe</span></div>
+      </div>
+      <div class="day-arrow">▼</div>
+    </div>
+    <div class="day-body">
+      <div class="alert-box">⭐ <strong>Último dia válido do ingresso.</strong> Aproveite ao máximo! Favoritos da família + Battle at Ministry 19h+ + souvenirs exclusivos.</div>
+      <div class="attr-list">
+        <div class="attr-item priority"><div class="ai-top"><div class="ai-time">Manhã</div><div class="ai-name">Favoritos da família — votação</div></div><div class="ai-tip">Votem na noite anterior o que cada um quer rever.</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">Tarde</div><div class="ai-name">🛍️ Souvenirs exclusivos Epic Universe</div></div><div class="ai-tip">Produtos só disponíveis aqui. Última chance!</div></div>
+        <div class="attr-item priority"><div class="ai-top"><div class="ai-time">19:00+</div><div class="ai-name">⭐ Battle at the Ministry — despedida</div><div class="ai-stars">★★★★★</div></div><div class="ai-tip">Última vez! Aproveite cada detalhe.</div></div>
+        <div class="attr-item"><div class="ai-top"><div class="ai-time">Após</div><div class="ai-name">🍹 CityWalk — Despedida Universal</div></div><div class="ai-tip">Jantar de despedida no CityWalk. Sem ingresso.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- D15 -->
+  <div class="day-card" data-date="2026-06-09">
+    <div class="day-card-header" onclick="toggleDay(this)">
+      <div class="day-num-badge"><div class="dn">JUN</div><div class="dd">09</div></div>
+      <div class="day-info">
+        <div class="di-label">D15 · TERÇA</div>
+        <div class="di-title">🛍️ Compras Finais</div>
+        <div class="di-tags"><span class="tag tag-s">Compras</span></div>
+      </div>
+      <div class="day-arrow">▼</div>
+    </div>
+    <div class="day-body">
+      <div class="day-note">Premium Outlets manhã · Nike, Coach, Polo, Adidas · Arrumar malas tarde · Jantar especial de despedida.</div>
+    </div>
+  </div>
+
+  <!-- D16 -->
+  <div class="day-card" data-date="2026-06-10">
+    <div class="day-card-header" onclick="toggleDay(this)">
+      <div class="day-num-badge"><div class="dn">JUN</div><div class="dd">10</div></div>
+      <div class="day-info">
+        <div class="di-label">D16 · QUARTA</div>
+        <div class="di-title">🌴 Dia Extra — Piscina + I-Drive</div>
+        <div class="di-tags"><span class="tag tag-r">Descanso</span></div>
+      </div>
+      <div class="day-arrow">▼</div>
+    </div>
+    <div class="day-body">
+      <div class="day-note">Piscina sem pressa · I-Drive / ICON Park / lojas locais · Jantar leve perto do hotel.</div>
+    </div>
+  </div>
+
+  <!-- D17 -->
+  <div class="day-card" data-date="2026-06-11">
+    <div class="day-card-header" onclick="toggleDay(this)">
+      <div class="day-num-badge"><div class="dn">JUN</div><div class="dd">11</div></div>
+      <div class="day-info">
+        <div class="di-label">D17 · QUINTA · ⚠️ VÉSPERA DO VOO</div>
+        <div class="di-title">🧳 Malas + Jantar de Despedida</div>
+        <div class="di-tags"><span class="tag tag-r">Malas</span></div>
+      </div>
+      <div class="day-arrow">▼</div>
+    </div>
+    <div class="day-body">
+      <div class="alert-box">⚠️ <strong>Foco total nas malas.</strong> Verificar limite Copa Airlines. Dormir cedo — voo amanhã!</div>
+      <div class="day-note">Organizar e fechar malas · Verificar peso · Jantar especial de despedida · Dormir cedo.</div>
+    </div>
+  </div>
+
+  <!-- D18 -->
+  <div class="day-card" data-date="2026-06-12">
+    <div class="day-card-header" onclick="toggleDay(this)">
+      <div class="day-num-badge"><div class="dn">JUN</div><div class="dd">12</div></div>
+      <div class="day-info">
+        <div class="di-label">D18 · SEXTA · RETORNO</div>
+        <div class="di-title">✈️ MCO → PTY → GRU</div>
+        <div class="di-tags"><span class="tag tag-f">Voo</span></div>
+      </div>
+      <div class="day-arrow">▼</div>
+    </div>
+    <div class="day-body">
+      <div class="day-note">Check-out 11h · Devolução Toyota RAV4 · Copa Airlines 15:25 MCO → GRU via PTY · Chegada SP 03:50 (13/Jun). Até a próxima aventura!</div>
+    </div>
+  </div>
+
+</div><!-- /page-schedule -->
+
+<!-- PAGE: PARQUES -->
+<div class="page" id="page-parks">
+  <div class="park-tabs">
+    <button class="park-tab active" onclick="switchPark(this,'epic')">🌟 Epic</button>
+    <button class="park-tab" onclick="switchPark(this,'ioa')">🧙 IoA</button>
+    <button class="park-tab" onclick="switchPark(this,'usf')">🎬 USF</button>
+    <button class="park-tab" onclick="switchPark(this,'disney')">🚀 Disney</button>
+    <button class="park-tab" onclick="switchPark(this,'volcano')">🏝️ Volcano</button>
+  </div>
+
+  <!-- EPIC -->
+  <div class="park-content active" id="park-epic">
+    <div class="s-title">🌟 Epic Universe</div>
+    <div class="park-intro"><strong>Regra de Ouro</strong>Battle at the Ministry: SEMPRE após 19h. Fila 120–300min ao meio-dia → 37–53min à noite. Não aceita Express Pass.</div>
+    <div class="attr-list">
+      <div class="attr-item priority"><div class="ai-top"><div class="ai-time">19h+</div><div class="ai-name">⭐ Battle at the Ministry</div><div class="ai-stars">★★★★★</div></div><div class="ai-height">40″ · 102cm</div><div class="ai-tip">MELHOR DO EPIC. SEMPRE de noite.</div></div>
+      <div class="attr-item priority"><div class="ai-top"><div class="ai-time">Rope Drop</div><div class="ai-name">Mario Kart: Bowser's Challenge</div><div class="ai-stars">★★★★★</div></div><div class="ai-height">40″ · 102cm · De 4a pode!</div><div class="ai-tip">20min abertura → 120min às 11h.</div></div>
+      <div class="attr-item priority"><div class="ai-top"><div class="ai-time">Rope Drop</div><div class="ai-name">Mine-Cart Madness</div><div class="ai-stars">★★★★★</div></div><div class="ai-height">34″ · 87cm</div><div class="ai-tip">30min abertura → 90min+ tarde.</div></div>
+      <div class="attr-item priority"><div class="ai-top"><div class="ai-time">Rope Drop</div><div class="ai-name">Monsters Unchained</div><div class="ai-stars">★★★★★</div></div><div class="ai-height">48″ · 122cm</div><div class="ai-tip">14 animatrônicos. Ir contra o fluxo!</div></div>
+      <div class="attr-item priority"><div class="ai-top"><div class="ai-time">Qualquer</div><div class="ai-name">Stardust Racers</div><div class="ai-stars">★★★★★</div></div><div class="ai-height">48″ · 122cm · Teen+adultos</div><div class="ai-tip">Melhor coaster do Epic. Experimente Photon E Pulsar!</div></div>
+      <div class="attr-item"><div class="ai-top"><div class="ai-time">Manhã</div><div class="ai-name">Curse of the Werewolf</div><div class="ai-stars">★★★★☆</div></div><div class="ai-height">40″ · 102cm</div><div class="ai-tip">Dark ride intenso. 6–8min abertura.</div></div>
+      <div class="attr-item"><div class="ai-top"><div class="ai-time">Qualquer</div><div class="ai-name">Hiccup's Wing Gliders</div><div class="ai-stars">★★★★☆</div></div><div class="ai-height">40″ · 102cm · Família</div></div>
+      <div class="attr-item"><div class="ai-top"><div class="ai-time">Show</div><div class="ai-name">Le Circus Arcanus</div><div class="ai-stars">★★★★★</div></div><div class="ai-tip">IMPERDÍVEL. Fantoches mágicos.</div></div>
+      <div class="attr-item"><div class="ai-top"><div class="ai-time">Show</div><div class="ai-name">Dark Arts Encounter</div><div class="ai-stars">★★★★☆</div></div><div class="ai-tip">Chegue 10min antes.</div></div>
+      <div class="attr-item"><div class="ai-top"><div class="ai-time">De 4a</div><div class="ai-name">Yoshi's Adventure</div><div class="ai-stars">★★★☆☆</div></div><div class="ai-height">Livre</div></div>
+      <div class="attr-item"><div class="ai-top"><div class="ai-time">De 4a</div><div class="ai-name">Constellation Carousel</div><div class="ai-stars">★★★☆☆</div></div><div class="ai-height">Livre</div></div>
+    </div>
+  </div>
+
+  <!-- IOA -->
+  <div class="park-content" id="park-ioa">
+    <div class="s-title">🧙 Islands of Adventure</div>
+    <div class="park-intro"><strong>D05 (Sáb) · D10 (Qui)</strong>Sábado = mais lotado. Rope drop 1h antes. Quinta = mais tranquilo — aproveite Velocicoaster e Hagrid's.</div>
+    <div class="attr-list">
+      <div class="attr-item priority"><div class="ai-top"><div class="ai-time">Rope Drop</div><div class="ai-name">Hagrid's Magical Creatures</div><div class="ai-stars">★★★★★</div></div><div class="ai-height">48″ · 122cm</div><div class="ai-tip">Top 3 do mundo. 90–180min. Use Express Pass se tiver.</div></div>
+      <div class="attr-item priority"><div class="ai-top"><div class="ai-time">Rope Drop</div><div class="ai-name">HP — Forbidden Journey</div><div class="ai-stars">★★★★★</div></div><div class="ai-height">48″ · 122cm</div><div class="ai-tip">25min abertura → 80–100min às 11h.</div></div>
+      <div class="attr-item priority"><div class="ai-top"><div class="ai-time">Rope Drop</div><div class="ai-name">Velocicoaster</div><div class="ai-stars">★★★★★</div></div><div class="ai-height">51″ · 130cm · Teen+adultos</div><div class="ai-tip">Melhor coaster IoA. 70mph.</div></div>
+      <div class="attr-item"><div class="ai-top"><div class="ai-time">Manhã</div><div class="ai-name">Incredible Hulk Coaster</div><div class="ai-stars">★★★★☆</div></div><div class="ai-height">54″ · 137cm</div><div class="ai-tip">0–64mph em 2s.</div></div>
+      <div class="attr-item"><div class="ai-top"><div class="ai-time">Manhã</div><div class="ai-name">Spider-Man 3D</div><div class="ai-stars">★★★★☆</div></div><div class="ai-height">40″ · 102cm · Família</div></div>
+      <div class="attr-item"><div class="ai-top"><div class="ai-time">Tarde</div><div class="ai-name">JP River Adventure</div><div class="ai-stars">★★★★☆</div></div><div class="ai-height">42″ · 107cm</div><div class="ai-tip">ROUPA MOLHA — leve capa!</div></div>
+      <div class="attr-item"><div class="ai-top"><div class="ai-time">De 4a</div><div class="ai-name">Flight of the Hippogriff</div><div class="ai-stars">★★★★☆</div></div><div class="ai-height">36″ · 91cm · Família</div></div>
+      <div class="attr-item"><div class="ai-top"><div class="ai-time">De 4a</div><div class="ai-name">Seuss Landing completo</div><div class="ai-stars">★★★☆☆</div></div><div class="ai-height">Livre / 36″</div><div class="ai-tip">Cat in the Hat, Caro-Seuss-el, One Fish.</div></div>
+      <div class="attr-item priority"><div class="ai-top"><div class="ai-time">Final do dia</div><div class="ai-name">🚂 Hogwarts Express → USF</div><div class="ai-stars">★★★★★</div></div><div class="ai-tip">Experiência DIFERENTE de USF→IoA!</div></div>
+    </div>
+  </div>
+
+  <!-- USF -->
+  <div class="park-content" id="park-usf">
+    <div class="s-title">🎬 Universal Studios FL</div>
+    <div class="park-intro"><strong>D06 · Dom 31/Mai</strong>Diagon Alley de manhã — menos lotado que Hogsmeade. Use Hogwarts Express ao final para ir ao IoA.</div>
+    <div class="attr-list">
+      <div class="attr-item priority"><div class="ai-top"><div class="ai-time">Rope Drop</div><div class="ai-name">HP — Escape from Gringotts</div><div class="ai-stars">★★★★★</div></div><div class="ai-height">40″ · 102cm</div><div class="ai-tip">Melhor atração USF. 30min abertura → 90min+ às 12h.</div></div>
+      <div class="attr-item"><div class="ai-top"><div class="ai-time">Logo após</div><div class="ai-name">Ollivanders (show)</div><div class="ai-stars">★★★★☆</div></div><div class="ai-tip">De 4a pode ser escolhido! Sessões a cada 15min.</div></div>
+      <div class="attr-item"><div class="ai-top"><div class="ai-time">Manhã</div><div class="ai-name">Hollywood Rip Ride Rockit</div><div class="ai-stars">★★★★☆</div></div><div class="ai-height">51″ · 130cm · Teen+adultos</div></div>
+      <div class="attr-item"><div class="ai-top"><div class="ai-time">Manhã</div><div class="ai-name">The Simpsons Ride</div><div class="ai-stars">★★★★☆</div></div><div class="ai-height">40″ · 102cm · Família</div></div>
+      <div class="attr-item"><div class="ai-top"><div class="ai-time">De 4a</div><div class="ai-name">Despicable Me Minion Mayhem</div><div class="ai-stars">★★★☆☆</div></div><div class="ai-height">40″ · 102cm</div><div class="ai-tip">Simulador suave. De 4a vai adorar!</div></div>
+      <div class="attr-item"><div class="ai-top"><div class="ai-time">De 4a</div><div class="ai-name">ET Adventure</div><div class="ai-stars">★★★★☆</div></div><div class="ai-height">34″ · 86cm · Família</div></div>
+      <div class="attr-item"><div class="ai-top"><div class="ai-time">Tarde</div><div class="ai-name">Revenge of the Mummy</div><div class="ai-stars">★★★★☆</div></div><div class="ai-height">48″ · 122cm · Teen+adultos</div></div>
+      <div class="attr-item priority"><div class="ai-top"><div class="ai-time">Final</div><div class="ai-name">🚂 Hogwarts Express → IoA</div><div class="ai-stars">★★★★★</div></div><div class="ai-tip">Personagens DIFERENTES do trajeto de volta!</div></div>
+    </div>
+  </div>
+
+  <!-- DISNEY -->
+  <div class="park-content" id="park-disney">
+    <div class="s-title">🚀 Disney Hollywood Studios</div>
+    <div class="park-intro"><strong>D07 · Seg 01/Jun — DIA ESPECIAL</strong>Lightning Lane Rise of Resistance: app Disney às 7h. Savi's Workshop: reservado — 11h. Não se atrase!</div>
+    <div class="attr-list">
+      <div class="attr-item priority"><div class="ai-top"><div class="ai-time">7h — App</div><div class="ai-name">⚡ Lightning Lane — Rise</div><div class="ai-stars">★★★★★</div></div><div class="ai-tip">Abra o app Disney às 7h e compre IMEDIATAMENTE. ~US$25–30/pessoa.</div></div>
+      <div class="attr-item priority"><div class="ai-top"><div class="ai-time">Rope Drop</div><div class="ai-name">Millennium Falcon: Smugglers Run</div><div class="ai-stars">★★★★☆</div></div><div class="ai-height">38″ · 97cm · Família</div></div>
+      <div class="attr-item priority"><div class="ai-top"><div class="ai-time">Com LL</div><div class="ai-name">⭐ Rise of the Resistance</div><div class="ai-stars">★★★★★</div></div><div class="ai-height">40″ · 102cm</div><div class="ai-tip">MELHOR DA DISNEY. Imersão total.</div></div>
+      <div class="attr-item priority"><div class="ai-top"><div class="ai-time">11:00</div><div class="ai-name">⭐ Savi's Workshop — Lightsaber</div><div class="ai-stars">★★★★★</div></div><div class="ai-height">RESERVADO · US$149,99</div><div class="ai-tip">Não se atrase! Memória para a vida toda.</div></div>
+      <div class="attr-item"><div class="ai-top"><div class="ai-time">12:30</div><div class="ai-name">Oga's Cantina — RESERVADO</div></div><div class="ai-tip">Drinques temáticos + banda espacial ao vivo.</div></div>
+      <div class="attr-item"><div class="ai-top"><div class="ai-time">13:30</div><div class="ai-name">Tower of Terror</div><div class="ai-stars">★★★★★</div></div><div class="ai-height">40″ · 102cm</div></div>
+      <div class="attr-item"><div class="ai-top"><div class="ai-time">15:00</div><div class="ai-name">Rock 'n' Roller Coaster</div><div class="ai-stars">★★★★☆</div></div><div class="ai-height">48″ · 122cm · Teen+adultos</div></div>
+      <div class="attr-item"><div class="ai-top"><div class="ai-time">17:00</div><div class="ai-name">Toy Story Land — de 4a</div><div class="ai-stars">★★★☆☆</div></div></div>
+      <div class="attr-item priority"><div class="ai-top"><div class="ai-time">19:00</div><div class="ai-name">Star Wars: A Galaxy Far, Far Away</div><div class="ai-stars">★★★★☆</div></div><div class="ai-tip">Show noturno gratuito. Encerramento perfeito!</div></div>
+    </div>
+  </div>
+
+  <!-- VOLCANO BAY -->
+  <div class="park-content" id="park-volcano">
+    <div class="s-title">🏝️ Volcano Bay</div>
+    <div class="park-intro"><strong>D04 · Sex 29/Mai</strong>Chegue na abertura — TapuTapu explode após 11h. De 4a: Runamukka Reef o dia todo!</div>
+    <div class="attr-list">
+      <div class="attr-item priority"><div class="ai-top"><div class="ai-time">Abertura</div><div class="ai-name">Krakatau Aqua Coaster</div><div class="ai-stars">★★★★★</div></div><div class="ai-height">42″ · 107cm · Família</div></div>
+      <div class="attr-item priority"><div class="ai-top"><div class="ai-time">Abertura</div><div class="ai-name">Ko'okiri Body Plunge</div><div class="ai-stars">★★★★★</div></div><div class="ai-height">48″ · 122cm · Teen+adultos</div><div class="ai-tip">Trapdoor drop. 70mph!</div></div>
+      <div class="attr-item priority"><div class="ai-top"><div class="ai-time">Tarde</div><div class="ai-name">⭐ Runamukka Reef — DE 4 ANOS!</div><div class="ai-stars">★★★★★</div></div><div class="ai-height">Livre</div><div class="ai-tip">Parque infantil aquático. Cascatas, escorregadores, jatos. Vai querer ficar o dia todo!</div></div>
+      <div class="attr-item"><div class="ai-top"><div class="ai-time">Tarde</div><div class="ai-name">The Reef (snorkel)</div><div class="ai-stars">★★★★☆</div></div><div class="ai-tip">Teen — tubarões e arraias reais.</div></div>
+      <div class="attr-item"><div class="ai-top"><div class="ai-time">Qualquer</div><div class="ai-name">Puka Uli Lagoon (ondas)</div></div><div class="ai-tip">Família toda. Relaxante.</div></div>
+      <div class="attr-item"><div class="ai-top"><div class="ai-time">Manhã</div><div class="ai-name">TeAwa the Fearless River</div></div><div class="ai-height">42″ · Teen+adultos</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: CHECKLIST -->
+<div class="page" id="page-checklist">
+  <div class="s-title">✅ Checklist</div>
+  <div class="cl-progress">
+    <div class="cl-bar-wrap"><div class="cl-bar" id="clBar" style="width:0%"></div></div>
+    <div class="cl-count" id="clCount">0 / 0</div>
+  </div>
+
+  <div class="cl-section">
+    <div class="cl-section-title">📄 Documentação</div>
+    <div class="cl-item" data-cl="doc1" onclick="toggleCl(this)"><div class="cl-box"></div><div class="cl-text">Passaportes válidos (vencimento após dez/2027)</div></div>
+    <div class="cl-item" data-cl="doc2" onclick="toggleCl(this)"><div class="cl-box"></div><div class="cl-text">Visto americano — todos 4 (ESTA ou B1/B2)</div></div>
+    <div class="cl-item" data-cl="doc3" onclick="toggleCl(this)"><div class="cl-box"></div><div class="cl-text">Seguro viagem Ultravioleta Black ativo</div></div>
+    <div class="cl-item" data-cl="doc4" onclick="toggleCl(this)"><div class="cl-box"></div><div class="cl-text">Caderneta vacinação das crianças</div></div>
+  </div>
+
+  <div class="cl-section">
+    <div class="cl-section-title">✈️ Logística</div>
+    <div class="cl-item" data-cl="log1" onclick="toggleCl(this)"><div class="cl-box"></div><div class="cl-text">Passagens Copa Airlines confirmadas</div></div>
+    <div class="cl-item" data-cl="log2" onclick="toggleCl(this)"><div class="cl-box"></div><div class="cl-text">Celebration Suites — check-in confirmado</div></div>
+    <div class="cl-item" data-cl="log3" onclick="toggleCl(this)"><div class="cl-box"></div><div class="cl-text">Toyota RAV4 — reserva confirmada</div></div>
+    <div class="cl-item" data-cl="log4" onclick="toggleCl(this)"><div class="cl-box"></div><div class="cl-text">Visitor Toll Pass — pegar no MCO ao chegar</div></div>
+    <div class="cl-item" data-cl="log5" onclick="toggleCl(this)"><div class="cl-box"></div><div class="cl-text">Cartão Ultravioleta Black — avisar viagem ao banco</div></div>
+  </div>
+
+  <div class="cl-section">
+    <div class="cl-section-title">🎟️ Ingressos & Reservas</div>
+    <div class="cl-item" data-cl="ing1" onclick="toggleCl(this)"><div class="cl-box"></div><div class="cl-text">Universal 14 dias consecutivos — vinculados ao app</div></div>
+    <div class="cl-item" data-cl="ing2" onclick="toggleCl(this)"><div class="cl-box"></div><div class="cl-text">Disney Hollywood Studios — 01/Jun reservado</div></div>
+    <div class="cl-item" data-cl="ing3" onclick="toggleCl(this)"><div class="cl-box"></div><div class="cl-text">Lightning Lane Rise of Resistance — comprar 01/Jun às 7h</div></div>
+    <div class="cl-item" data-cl="ing4" onclick="toggleCl(this)"><div class="cl-box"></div><div class="cl-text">Savi's Workshop 11h — RESERVADO (US$149,99)</div></div>
+    <div class="cl-item" data-cl="ing5" onclick="toggleCl(this)"><div class="cl-box"></div><div class="cl-text">Oga's Cantina — reservado no app Disney</div></div>
+    <div class="cl-item" data-cl="ing6" onclick="toggleCl(this)"><div class="cl-box"></div><div class="cl-text">Cirque du Soleil Disney Springs — reservado</div></div>
+    <div class="cl-item" data-cl="ing7" onclick="toggleCl(this)"><div class="cl-box"></div><div class="cl-text">The BOATHOUSE Disney Springs — D13 reservado</div></div>
+  </div>
+
+  <div class="cl-section">
+    <div class="cl-section-title">📱 Apps</div>
+    <div class="cl-item" data-cl="app1" onclick="toggleCl(this)"><div class="cl-box"></div><div class="cl-text">Universal Orlando — ingressos vinculados</div></div>
+    <div class="cl-item" data-cl="app2" onclick="toggleCl(this)"><div class="cl-box"></div><div class="cl-text">My Disney Experience — configurado</div></div>
+    <div class="cl-item" data-cl="app3" onclick="toggleCl(this)"><div class="cl-box"></div><div class="cl-text">Google Maps — mapas offline baixados (Orlando + Sarasota)</div></div>
+    <div class="cl-item" data-cl="app4" onclick="toggleCl(this)"><div class="cl-box"></div><div class="cl-text">Power bank carregado</div></div>
+  </div>
+
+  <div class="cl-section">
+    <div class="cl-section-title">🎒 Itens Essenciais</div>
+    <div class="cl-item" data-cl="it1" onclick="toggleCl(this)"><div class="cl-box"></div><div class="cl-text">Protetor solar FPS 50+ (vários frascos)</div></div>
+    <div class="cl-item" data-cl="it2" onclick="toggleCl(this)"><div class="cl-box"></div><div class="cl-text">Capas de chuva leves (dobráveis)</div></div>
+    <div class="cl-item" data-cl="it3" onclick="toggleCl(this)"><div class="cl-box"></div><div class="cl-text">Sandálias de borracha — Volcano Bay</div></div>
+    <div class="cl-item" data-cl="it4" onclick="toggleCl(this)"><div class="cl-box"></div><div class="cl-text">Roupa reserva (atrações que molham)</div></div>
+    <div class="cl-item" data-cl="it5" onclick="toggleCl(this)"><div class="cl-box"></div><div class="cl-text">Medicamentos + kit primeiros socorros</div></div>
+    <div class="cl-item" data-cl="it6" onclick="toggleCl(this)"><div class="cl-box"></div><div class="cl-text">Snacks e água para o carro</div></div>
+  </div>
+</div>
+
+<!-- PAGE: CONTATOS -->
+<div class="page" id="page-contacts">
+  <div class="s-title">📞 Contatos Úteis</div>
+
+  <div class="contact-card">
+    <div class="cc-title">🏨 Hotel</div>
+    <div class="contact-row"><span class="cr-label">Nome</span><span class="cr-value">Celebration Suites</span></div>
+    <div class="contact-row"><span class="cr-label">Endereço</span><span class="cr-value">5820 W Irlo Bronson Hwy</span></div>
+    <div class="contact-row"><span class="cr-label">Cidade</span><span class="cr-value">Kissimmee, FL</span></div>
+    <div class="contact-row"><span class="cr-label">Telefone</span><a href="tel:+14079642000">+1 (407) 964-2000</a></div>
+    <div class="contact-row"><span class="cr-label">Check-in</span><span class="cr-value">26/Mai · Terça</span></div>
+    <div class="contact-row"><span class="cr-label">Check-out</span><span class="cr-value">12/Jun · Sexta · 11h</span></div>
+  </div>
+
+  <div class="contact-card">
+    <div class="cc-title">✈️ Voo</div>
+    <div class="contact-row"><span class="cr-label">Companhia</span><span class="cr-value">Copa Airlines</span></div>
+    <div class="contact-row"><span class="cr-label">Rota ida</span><span class="cr-value">GRU → PTY → MCO</span></div>
+    <div class="contact-row"><span class="cr-label">Partida</span><span class="cr-value">26/Mai · 03:15</span></div>
+    <div class="contact-row"><span class="cr-label">Chegada MCO</span><span class="cr-value">26/Mai · 13:48</span></div>
+    <div class="contact-row"><span class="cr-label">Rota volta</span><span class="cr-value">MCO → PTY → GRU</span></div>
+    <div class="contact-row"><span class="cr-label">Partida retorno</span><span class="cr-value">12/Jun · 15:25</span></div>
+    <div class="contact-row"><span class="cr-label">Chegada GRU</span><span class="cr-value">13/Jun · 03:50</span></div>
+    <div class="contact-row"><span class="cr-label">SAC Copa</span><a href="tel:+5508007222672">0800 722 2672</a></div>
+  </div>
+
+  <div class="contact-card">
+    <div class="cc-title">🚗 Carro</div>
+    <div class="contact-row"><span class="cr-label">Veículo</span><span class="cr-value">Toyota RAV4</span></div>
+    <div class="contact-row"><span class="cr-label">Período</span><span class="cr-value">26/Mai → 12/Jun</span></div>
+    <div class="contact-row"><span class="cr-label">Retirada</span><span class="cr-value">26/Mai · MCO</span></div>
+    <div class="contact-row"><span class="cr-label">Devolução</span><span class="cr-value">12/Jun · MCO ~12h</span></div>
+    <div class="contact-row"><span class="cr-label">Toll Pass</span><span class="cr-value">Visitor Toll Pass · MCO grátis</span></div>
+  </div>
+
+  <div class="contact-card">
+    <div class="cc-title">🛡️ Seguro & Cartão</div>
+    <div class="contact-row"><span class="cr-label">Seguro</span><span class="cr-value">Ultravioleta Black (incluso)</span></div>
+    <div class="contact-row"><span class="cr-label">SAC Nubank</span><a href="tel:+5540200185">4020 0185</a></div>
+    <div class="contact-row"><span class="cr-label">Emergência intl.</span><a href="tel:+5511250916666">+55 11 2509 6666</a></div>
+  </div>
+
+  <div class="contact-card">
+    <div class="cc-title">🎟️ Parques</div>
+    <div class="contact-row"><span class="cr-label">Universal</span><a href="tel:+14073638000">+1 (407) 363-8000</a></div>
+    <div class="contact-row"><span class="cr-label">Disney</span><a href="tel:+14074078000">+1 (407) 407-8000</a></div>
+    <div class="contact-row"><span class="cr-label">App Universal</span><span class="cr-value">Universal Orlando Resort</span></div>
+    <div class="contact-row"><span class="cr-label">App Disney</span><span class="cr-value">My Disney Experience</span></div>
+  </div>
+
+  <div class="contact-card">
+    <div class="cc-title">🚨 Emergências EUA</div>
+    <div class="contact-row"><span class="cr-label">Emergência</span><a href="tel:911">911</a></div>
+    <div class="contact-row"><span class="cr-label">Consulado BR · Miami</span><a href="tel:+13053853332">+1 (305) 385-3332</a></div>
+  </div>
+
+  <div class="divider"></div>
+  <div class="s-title">🛡️ Seguros Nu Ultravioleta</div>
+
+  <div class="alert-box alert-teal">✅ <strong>Passagens compradas com o Ultravioleta Black</strong> — seguros de saúde e bagagem ativados. <strong>AÇÃO OBRIGATÓRIA:</strong> emitir o Bilhete de Seguro em aig.com/Mastercard/pt ANTES de embarcar (26/Mai).</div>
+
+  <div class="contact-card">
+    <div class="cc-title">🏥 Seguro Saúde — MasterAssist Black</div>
+    <div class="contact-row"><span class="cr-label">Cobertura máx.</span><span class="cr-value">US$ 175.000 / pessoa</span></div>
+    <div class="contact-row"><span class="cr-label">Cobertos</span><span class="cr-value">Titular + parceiro(a) + filhos</span></div>
+    <div class="contact-row"><span class="cr-label">Cobre</span><span class="cr-value">Emergências médicas e hospitalares</span></div>
+    <div class="contact-row"><span class="cr-label">Traslado médico</span><span class="cr-value">✅ Até US$ 100.000</span></div>
+    <div class="contact-row"><span class="cr-label">Retorno emergência</span><span class="cr-value">✅ Até US$ 7.500</span></div>
+    <div class="contact-row"><span class="cr-label">Internação</span><span class="cr-value">✅ US$ 200/dia · até 30 dias</span></div>
+    <div class="contact-row"><span class="cr-label">Prorrogação estadia</span><span class="cr-value">✅ US$ 250/dia · até 5 dias</span></div>
+    <div class="contact-row"><span class="cr-label">Retorno menores/idosos</span><span class="cr-value">✅ Até US$ 25.000</span></div>
+    <div class="contact-row"><span class="cr-label">Sem desembolso</span><span class="cr-value">✅ Mastercard paga o hospital direto</span></div>
+    <div class="contact-row"><span class="cr-label">Período máx.</span><span class="cr-value">60 dias consecutivos</span></div>
+    <div class="contact-row"><span class="cr-label">⚠️ Bilhete OBRIGATÓRIO</span><a href="https://www.aig.com/Mastercard/pt">aig.com/Mastercard/pt</a></div>
+  </div>
+
+  <div class="contact-card">
+    <div class="cc-title">🚗 Seguro Carro Alugado — MasterSeguro Auto</div>
+    <div class="contact-row"><span class="cr-label">Cobertura danos veículo</span><span class="cr-value">Até US$ 75.000 / incidente</span></div>
+    <div class="contact-row"><span class="cr-label">Cobre</span><span class="cr-value">Colisão · Roubo · Incêndio · Granizo · Vandalismo</span></div>
+    <div class="contact-row"><span class="cr-label">Itens no veículo</span><span class="cr-value">Até US$ 303 (comprados no cartão)</span></div>
+    <div class="contact-row"><span class="cr-label">Não cobre</span><span class="cr-value">Danos a terceiros</span></div>
+    <div class="contact-row"><span class="cr-label">Bilhete obrigatório?</span><span class="cr-value">❌ Não — automático</span></div>
+    <div class="contact-row"><span class="cr-label">Requisito #1</span><span class="cr-value">Pagar caução com o Ultravioleta</span></div>
+    <div class="contact-row"><span class="cr-label">Requisito #2</span><span class="cr-value">Contrato no seu nome</span></div>
+    <div class="contact-row" style="color:var(--red);"><span class="cr-label" style="color:var(--red);font-weight:600;">⚠️ RECUSAR CDW/LDW</span><span class="cr-value" style="color:var(--red);">Rejeitar seguro colisão da locadora</span></div>
+    <div class="contact-row"><span class="cr-label">Sinistro</span><a href="https://www.mycardbenefits.com">mycardbenefits.com</a></div>
+  </div>
+
+  <div class="contact-card">
+    <div class="cc-title">🧳 Proteção de Bagagem</div>
+    <div class="contact-row"><span class="cr-label">Atraso +4h</span><span class="cr-value">Reembolso até US$ 600</span></div>
+    <div class="contact-row"><span class="cr-label">Perda total</span><span class="cr-value">Até US$ 3.000</span></div>
+    <div class="contact-row"><span class="cr-label">Eletrônicos perdidos</span><span class="cr-value">Até US$ 500 / item</span></div>
+    <div class="contact-row"><span class="cr-label">Requisito</span><span class="cr-value">Abrir PIR com a companhia aérea</span></div>
+  </div>
+
+  <div class="contact-card">
+    <div class="cc-title">📞 Acionar os Seguros — Contatos</div>
+    <div class="contact-row"><span class="cr-label">Mastercard Global 24h (PT)</span><a href="tel:+16367227111">+1 636-722-7111</a></div>
+    <div class="contact-row"><span class="cr-label">Mastercard Brasil</span><a href="tel:08008913294">0800 891 3294</a></div>
+    <div class="contact-row"><span class="cr-label">Concierge Black Brasil</span><a href="tel:08007252025">0800 725 2025</a></div>
+    <div class="contact-row"><span class="cr-label">SAC AIG (seguradora) 24h</span><a href="tel:08007266130">0800 726 6130</a></div>
+    <div class="contact-row"><span class="cr-label">Bagagem EUA</span><a href="tel:+18662527491">+1 866-252-7491</a></div>
+    <div class="contact-row"><span class="cr-label">Nubank Emergência intl.</span><a href="tel:+5511250916666">+55 11 2509 6666</a></div>
+  </div>
+
+  <div class="contact-card">
+    <div class="cc-title">🔗 Links — Emissão e Sinistros</div>
+    <div class="contact-row"><span class="cr-label">🏥 Sinistro Saúde</span><a href="https://www.mycardbenefits.com/bra/pt_BR/benefits/mex">mycardbenefits.com</a></div>
+    <div class="contact-row"><span class="cr-label">🚗 Sinistro Carro</span><a href="https://www.mycardbenefits.com">mycardbenefits.com</a></div>
+    <div class="contact-row"><span class="cr-label">📋 Emitir bilhete</span><a href="https://www.aig.com/Mastercard/pt">aig.com/Mastercard/pt</a></div>
+    <div class="contact-row"><span class="cr-label">📧 Email sinistros</span><span class="cr-value">mcresponse@ufac-claims.com</span></div>
+    <div class="contact-row"><span class="cr-label" style="color:var(--gold);font-weight:600;">⚠️ Emitir bilhete saúde</span><span class="cr-value" style="color:var(--gold);">ANTES de 26/Mai</span></div>
+  </div>
+
+  <div class="tip-card"><strong>⚠️ 3 Ações obrigatórias antes de embarcar</strong><p>1. Emitir Bilhete de Seguro em <strong>aig.com/Mastercard/pt</strong> — saúde, bagagem e inconveniências<br>2. Pagar caução/depósito do RAV4 com o Ultravioleta Black (seguro carro é automático)<br>3. Guardar todos os comprovantes: passagem, contrato carro, notas fiscais de compras</p></div>
+
+  <div class="divider"></div>
+  <div class="s-title">💰 Orçamento</div>
+
+  <div class="contact-card">
+    <div class="cc-title">💳 Gastos Confirmados</div>
+    <div class="contact-row"><span class="cr-label">✈️ Voo Copa · 4p</span><span class="cr-value">R$ 16.316,94</span></div>
+    <div class="contact-row"><span class="cr-label">🅿️ Estacionamento GRU</span><span class="cr-value">R$ 640,50</span></div>
+    <div class="contact-row"><span class="cr-label">🏨 Celebration Suites · 17n</span><span class="cr-value">R$ 5.742,62</span></div>
+    <div class="contact-row"><span class="cr-label">🎟️ Universal · 14 dias · 4p</span><span class="cr-value">R$ 11.252,00</span></div>
+    <div class="contact-row"><span class="cr-label">🏰 Disney HWS · 4p</span><span class="cr-value">R$ 4.102,92</span></div>
+    <div class="contact-row"><span class="cr-label">⚡ Lightning Lane · Rise · 4p</span><span class="cr-value">R$ 560,00</span></div>
+    <div class="contact-row"><span class="cr-label">🚗 RAV4 · 26/Mai→12/Jun</span><span class="cr-value">R$ 2.421,80</span></div>
+    <div class="contact-row"><span class="cr-label">🧳 Bagagem · Seguro · Taxas</span><span class="cr-value" style="color:var(--teal)">R$ 0,00</span></div>
+    <div class="contact-row"><span class="cr-label">🏷️ Visitor Toll Pass (caução ↩)</span><span class="cr-value" style="color:var(--muted)">R$ 56,00</span></div>
+    <div class="contact-row"><span class="cr-label">💚 Cashback 5% Nu Ultravioleta</span><span class="cr-value" style="color:var(--teal)">- R$ 1.102,98</span></div>
+    <div class="contact-row" style="border-top:1px solid var(--border);margin-top:.2rem"><span class="cr-label" style="font-weight:600;color:var(--text)">TOTAL CONFIRMADO</span><span class="cr-value" style="color:var(--gold);font-weight:600;">R$ 39.989,80</span></div>
+  </div>
+
+  <div class="contact-card">
+    <div class="cc-title">📊 Estimados Adicionais</div>
+    <div class="contact-row"><span class="cr-label">⚔️ Savi's Workshop</span><span class="cr-value">~ R$ 850</span></div>
+    <div class="contact-row"><span class="cr-label">🍽️ Alimentação (18 dias)</span><span class="cr-value">~ R$ 8.190</span></div>
+    <div class="contact-row"><span class="cr-label">🛍️ Compras e imprevistos</span><span class="cr-value">~ R$ 3.360</span></div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" onclick="switchPage('schedule', this)">
+    <span class="nav-icon">📅</span>Roteiro
+  </button>
+  <button class="nav-btn" onclick="switchPage('parks', this)">
+    <span class="nav-icon">🎢</span>Parques
+  </button>
+  <button class="nav-btn" onclick="switchPage('checklist', this)">
+    <span class="nav-icon">✅</span>Checklist
+  </button>
+  <button class="nav-btn" onclick="switchPage('contacts', this)">
+    <span class="nav-icon">📞</span>Info
+  </button>
+</nav>
+
+<button class="fab" id="fab" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+// ── PAGE NAVIGATION ──
+function switchPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ── DAY TOGGLE ──
+function toggleDay(header) {
+  header.closest('.day-card').classList.toggle('open');
+}
+
+// ── PARK TABS ──
+function switchPark(btn, id) {
+  document.querySelectorAll('.park-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.park-content').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('park-' + id).classList.add('active');
+}
+
+// ── CHECKLIST ──
+function toggleCl(item) {
+  item.classList.toggle('done');
+  const key = item.dataset.cl;
+  if (item.classList.contains('done')) {
+    localStorage.setItem('cl_' + key, '1');
+  } else {
+    localStorage.removeItem('cl_' + key);
+  }
+  updateProgress();
+}
+
+function updateProgress() {
+  const items = document.querySelectorAll('.cl-item[data-cl]');
+  const done = document.querySelectorAll('.cl-item[data-cl].done').length;
+  const pct = items.length ? Math.round(done / items.length * 100) : 0;
+  document.getElementById('clBar').style.width = pct + '%';
+  document.getElementById('clCount').textContent = done + ' / ' + items.length;
+}
+
+function loadChecklist() {
+  document.querySelectorAll('.cl-item[data-cl]').forEach(item => {
+    if (localStorage.getItem('cl_' + item.dataset.cl)) {
+      item.classList.add('done');
+    }
+  });
+  updateProgress();
+}
+
+// ── TODAY HIGHLIGHT ──
+function highlightToday() {
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const dd = String(today.getDate()).padStart(2, '0');
+  const todayStr = yyyy + '-' + mm + '-' + dd;
+
+  const cards = document.querySelectorAll('.day-card[data-date]');
+  let found = false;
+  cards.forEach(card => {
+    if (card.dataset.date === todayStr) {
+      card.classList.add('today');
+      card.classList.add('open');
+      found = true;
+      setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
+    }
+  });
+
+  const badge = document.getElementById('todayBadge');
+  if (found) {
+    const days = ['DOM','SEG','TER','QUA','QUI','SEX','SÁB'];
+    badge.textContent = days[today.getDay()];
+  } else {
+    badge.textContent = dd + '/' + mm;
+  }
+}
+
+// ── FAB SCROLL ──
+window.addEventListener('scroll', () => {
+  document.getElementById('fab').classList.toggle('visible', window.scrollY > 300);
+});
+
+// ── INIT ──
+loadChecklist();
+highlightToday();
+</script>
+</body>
+</html>
